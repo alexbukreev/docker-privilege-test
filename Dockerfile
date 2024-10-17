@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y \
 RUN mkdir /var/run/sshd
 
 # Устанавливаем пароль для root (замени 'password' на нужный пароль)
-RUN echo 'root:jujkjUju6' | chpasswd
+# RUN echo 'root:jujkjUju6' | chpasswd
 
 # Включаем возможность логина по паролю
 RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
