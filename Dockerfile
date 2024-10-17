@@ -16,19 +16,14 @@ RUN apt-get update && apt-get install -y \
 
 # Настраиваем SSH
 RUN mkdir /var/run/sshd
-RUN mkdir -p /root/.ssh
 
-# Копируем публичный ключ для аутентификации по ключу
-COPY id_rsa.pub /root/.ssh/authorized_keys
+# Устанавливаем пароль для root пользователя (замени 'password' на желаемый пароль)
+RUN echo 'root:jujk_jUju6' | chpasswd
 
-# Настройки SSH для использования ключа
-RUN chmod 600 /root/.ssh/authorized_keys
-RUN echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
-RUN echo "PubkeyAuthentication yes" >> /etc/ssh/sshd_config
-RUN echo "PasswordAuthentication no" >> /etc/ssh/sshd_config
-
-# Добавляем перезапуск SSH-сервера
-RUN service ssh restart
+# Включаем возможность логина по паролю
+RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
+RUN echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config
 
 # Открываем порт 22 для SSH
 EXPOSE 22
