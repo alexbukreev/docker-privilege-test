@@ -1,7 +1,7 @@
 # Используем базовый образ Ubuntu
 FROM ubuntu:latest
 
-# Устанавливаем необходимые утилиты для тестирования
+# Устанавливаем необходимые утилиты для тестирования и SSH-сервер
 RUN apt-get update && apt-get install -y \
     curl \
     net-tools \
@@ -11,14 +11,24 @@ RUN apt-get update && apt-get install -y \
     vim \
     gcc \
     gdb \
-    sudo
+    sudo \
+    openssh-server
 
-# Создаем скрипт для проверки привилегий
-COPY breakout.sh /breakout.sh
-RUN chmod +x /breakout.sh
+# Настраиваем SSH
+RUN mkdir /var/run/sshd
+RUN mkdir -p /root/.ssh
 
-# Запускаем bash для интерактивной работы
-CMD ["/bin/bash"]
+# Копируем публичный ключ для аутентификации по ключу
+COPY id_rsa.pub /root/.ssh/authorized_keys
 
-# Указываем порт для работы (например, 8080)
-EXPOSE 8080
+# Настройки SSH для использования ключа
+RUN chmod 600 /root/.ssh/authorized_keys
+RUN echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
+RUN echo "PubkeyAuthentication yes" >> /etc/ssh/sshd_config
+RUN echo "PasswordAuthentication no" >> /etc/ssh/sshd_config
+
+# Открываем порт 22 для SSH
+EXPOSE 22
+
+# Запускаем SSH-сервер
+CMD ["/usr/sbin/sshd", "-D"]
