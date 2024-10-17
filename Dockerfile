@@ -27,6 +27,9 @@ RUN echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
 RUN echo "PubkeyAuthentication yes" >> /etc/ssh/sshd_config
 RUN echo "PasswordAuthentication no" >> /etc/ssh/sshd_config
 
+# Добавляем перезапуск SSH-сервера
+RUN service ssh restart
+
 # Открываем порт 22 для SSH
 EXPOSE 22
 
