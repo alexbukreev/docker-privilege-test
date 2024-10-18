@@ -1,23 +1,13 @@
-# Используем базовый образ Ubuntu
-FROM ubuntu:latest
+FROM alpine:latest
 
-# Устанавливаем только SSH-сервер
-RUN apt-get update && apt-get install -y \
-    openssh-server
+# Устанавливаем необходимые пакеты
+RUN apk --no-cache add tinyproxy
 
-# Настраиваем SSH
-RUN mkdir /var/run/sshd
+# Копируем конфигурационный файл
+COPY tinyproxy.conf /etc/tinyproxy/tinyproxy.conf
 
-# Устанавливаем пароль для root (замени 'password' на нужный пароль)
-# RUN echo 'root:jujkjUju6' | chpasswd
+# Экспонируем порт 8888
+EXPOSE 8888
 
-# Включаем возможность логина по паролю
-RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-RUN sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
-RUN echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config
-
-# Открываем порт 22 для SSH
-EXPOSE 22
-
-# Запускаем SSH-сервер
-CMD ["/usr/sbin/sshd", "-D"]
+# Запускаем TinyProxy
+CMD ["tinyproxy", "-d"]
