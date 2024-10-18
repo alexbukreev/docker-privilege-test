@@ -1,13 +1,14 @@
-FROM alpine:latest
+# Используем базовый образ Python
+FROM python:3.12
 
-# Устанавливаем необходимые пакеты
-RUN apk --no-cache add tinyproxy
+# Устанавливаем tinyproxy через apt
+RUN apt-get update && apt-get install -y tinyproxy && apt-get clean
 
-# Копируем конфигурационный файл
+# Копируем конфигурацию tinyproxy
 COPY tinyproxy.conf /etc/tinyproxy/tinyproxy.conf
 
 # Экспонируем порт 8888
 EXPOSE 8888
 
-# Запускаем TinyProxy
+# Запускаем tinyproxy
 CMD ["tinyproxy", "-d"]
