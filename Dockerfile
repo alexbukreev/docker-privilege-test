@@ -7,6 +7,8 @@ RUN apt-get update && apt-get install -y tinyproxy && apt-get clean
 # Копируем конфигурацию tinyproxy
 COPY tinyproxy.conf /etc/tinyproxy/tinyproxy.conf
 
+ENTRYPOINT ["python"]
+
 # Запускаем tinyproxy
 CMD ["tinyproxy"]
 
