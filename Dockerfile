@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y tinyproxy && apt-get clean
 COPY tinyproxy.conf /etc/tinyproxy/tinyproxy.conf
 
 # Запускаем tinyproxy
-CMD ["tinyproxy", "-d"]
+CMD ["tinyproxy"]
 
 # Экспонируем порт 8888
 EXPOSE 8888
